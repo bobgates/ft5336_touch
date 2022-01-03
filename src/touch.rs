@@ -40,8 +40,6 @@ impl<
         rprintln!("Testing I2C");
 
         let cmd: [u8; 1] = [0];
-        // let mut buf: [u8; 1] = [0];
-
         if self.i2c.write(self.addr, &cmd).is_ok() {
             rprintln!("Wrote to touchpad okay");
         }
