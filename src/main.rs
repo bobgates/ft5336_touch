@@ -15,87 +15,7 @@ use stm32f7xx_hal::{
     rcc::{HSEClock, HSEClockMode, Rcc},
 };
 
-mod touch;
-
-// fn draw_keypad(display: &mut Stm32F7DiscoDisplay<u16>) {
-//     let c = BACKGROUND_COLOR;
-//     let background_color: u32 =
-//         c.b() as u32 & 0x1F | ((c.g() as u32 & 0x3F) << 5) | ((c.r() as u32 & 0x1F) << 11);
-
-//     unsafe {
-//         display
-//             .controller
-//             .draw_rectangle(Layer::L1, (0, 0), (480, 272), background_color);
-//     }
-
-//     for i in (0..3).rev() {
-//         for j in 0..3 {
-//             let a = match 1 + i * 3 + j {
-//                 0 => "0",
-//                 1 => "1",
-//                 2 => "2",
-//                 3 => "3",
-//                 4 => "4",
-//                 5 => "5",
-//                 6 => "6",
-//                 7 => "7",
-//                 8 => "8",
-//                 9 => "9",
-//                 _ => "",
-//             };
-//             button(
-//                 KEY_X_OFFSET + j * KEY_X_SPACING,
-//                 KEY_Y_OFFSET + i * KEY_Y_SPACING,
-//                 a,
-//                 display,
-//             );
-//         }
-//     }
-//     button(KEY_X_OFFSET, KEY_Y_OFFSET + 3 * KEY_Y_SPACING, "0", display);
-//     button(
-//         KEY_X_OFFSET + 1 * KEY_X_SPACING,
-//         KEY_Y_OFFSET + 3 * KEY_Y_SPACING,
-//         ".",
-//         display,
-//     );
-//     button(
-//         KEY_X_OFFSET + 2 * KEY_X_SPACING,
-//         KEY_Y_OFFSET + 3 * KEY_Y_SPACING,
-//         "",
-//         display,
-//     );
-
-//     let style = PrimitiveStyleBuilder::new()
-//         .stroke_width(BUTTON_STROKE_WIDTH)
-//         .stroke_color(BUTTON_STROKE_COLOR)
-//         .fill_color(Rgb565::BLACK)
-//         .build();
-
-//     RoundedRectangle::with_equal_corners(
-//         Rectangle::new(
-//             Point::new(KEY_X_OFFSET, KEY_Y_OFFSET - 55),
-//             Size::new(BUTTON_WIDTH + (2 * KEY_X_SPACING) as u32, BUTTON_HEIGHT),
-//         ),
-//         Size::new(CORNER_RADIUS, CORNER_RADIUS),
-//     )
-//     .into_styled(style)
-//     .draw(display)
-//     .ok();
-
-//     let style = MonoTextStyle::new(&PROFONT_24_POINT, Rgb565::YELLOW);
-
-//     Text::new(
-//         "300.89",
-//         Point::new(KEY_X_OFFSET + TEXT_XOFFSET, 5 + TEXT_YOFFSET),
-//         style,
-//     )
-//     .draw(display)
-//     .ok();
-// }
-
-// impl cortex_m::prelude::_embedded_hal_blocking_delay_DelayUs<i32> for stm32f7xx_hal::delay::Delay {
-//     fn delay(&self) {}
-// }
+mod ft5336_touch;
 
 #[entry]
 fn main() -> ! {
@@ -120,7 +40,7 @@ fn main() -> ! {
     let scl = gpioh.ph7.into_alternate_open_drain::<4>(); //LCD_SCL
     let sda = gpioh.ph8.into_alternate_open_drain::<4>(); //LSD_SDA
 
-    let touch = touch::Touch::new(perif.I2C3, scl, sda, &mut rcc.apb1, clocks);
+    let touch = ft5336_touch::Touch::new(perif.I2C3, scl, sda, &mut rcc.apb1, clocks);
 
     touch.test();
 
